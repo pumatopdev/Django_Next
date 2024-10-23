@@ -31,12 +31,18 @@ export default function RegisterPage() {
     }
 
     try {
-      await registerService(firstName, lastName, email, password);
-      alert('Registration successful!');
-      router.push('/login');  // Redirect to login after successful registration
+      const response = await registerService(firstName, lastName, email, password);
+      if(response.success){
+        alert('Registration successful!');
+        router.push('/login');  // Redirect to login after successful registration
+      }
     } catch (err) {
       setError('Registration failed. Please try again.');
     }
+  };
+
+  const handleBackToHome = () => {
+    router.push('/login');  // Navigate to the home page
   };
 
   return (
@@ -104,9 +110,13 @@ export default function RegisterPage() {
           <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">
             Register
           </button>
-          <div className="mt-4">
-            <a href="/login" className="text-blue-500">Already have an account? Login</a>
-          </div>
+          <button
+            type="button"  // It's a button, but we specify it shouldn't submit the form
+            onClick={handleBackToHome}  // Navigate to home when clicked
+            className="mt-4 w-full bg-gray-500 text-white p-2 rounded"
+          >
+            ← Back
+          </button>
         </form>
       </div>
     </Layout>

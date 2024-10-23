@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { login as loginService } from '../../services/authService';
 import { validateEmail } from '../../utils/validation';
 import Layout from '../../components/Layout';
+import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,11 +24,13 @@ export default function LoginPage() {
     }
 
     try {
-      const data = await loginService(email, password);
-      setAuth(data.token);  // Store JWT token in context
-      router.push('/');      // Redirect to Dashboard
+      const response = await loginService(email, password);
+      if(response.success){
+        setAuth(response.data.token, response.data.user);  // Store JWT token in context
+        router.push('/');      // Redirect to Dashboard
+      }
     } catch (err) {
-      setError('Invalid login credentials');
+      setError('Invalid login credentials');  //toast.error!
     }
   };
 
@@ -60,6 +63,17 @@ export default function LoginPage() {
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
             Login
           </button>
+          {/* Register link using <Link> */}
+          <div className='mt-4'>
+            <p className='text-sm'>
+              Don't have an account?{' '}
+              <a href = "/register" className='text-blue-500 float-right'>
+              Register here</a>
+              <a href = "/" className='text-blue-500 float-left'>
+              Back</a>
+            </p>
+          </div>
+
         </form>
       </div>
     </Layout>
