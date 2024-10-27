@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';  // New way to use router in App Ro
 import { register as registerService } from '../../services/authService';
 import { validateEmail } from '../../utils/validation';
 import Layout from '../../components/Layout';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const {role} = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +44,17 @@ export default function RegisterPage() {
   };
 
   const handleBackToHome = () => {
-    router.push('/login');  // Navigate to the home page
+    if (role === 'admin') {
+      router.push('/user-management');
+    } 
+    else{
+      router.push('/login');
+    }  // Navigate to the home page
   };
 
   return (
     <Layout>
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center text-black">
         <form className="w-full max-w-md bg-white p-8 rounded-lg" onSubmit={handleSubmit}>
           <h1 className="text-2xl mb-4">Register</h1>
           {error && <p className="text-red-500">{error}</p>}

@@ -1,14 +1,5 @@
-import axios, { isAxiosError } from 'axios';
-
-const API_URL = 'http://localhost:8000/api';  // Your Django backend URL
-
-export type ApiResponse = {
-  success: true,
-  data: any
-} | {
-  success: false,
-  message: string
-}
+import api from './axiosInstance'
+import { isAxiosError } from 'axios'
 
 const handleError = (err: any): {
   success: false,
@@ -37,10 +28,11 @@ const handleError = (err: any): {
 
 export const getUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/users/`);
+    const response = await api.get('admin/users/');
+    console.log("a;dsfjalskdjf;alkjsdflkja;lfd" + response.data.data);
     return{
       success: true,
-      data: response.data
+      data: response.data.data
     }
   } catch (error) {
     return handleError(error);
@@ -49,7 +41,7 @@ export const getUsers = async () => {
 
 export const createUser = async(userData: any) => {
   try {
-    const response = await axios.post(`${API_URL}/users/`, userData);
+    const response = await api.post('/admin/users/', userData);
     return{
       success: true,
       data: response.data
@@ -59,9 +51,9 @@ export const createUser = async(userData: any) => {
   }
 };
 
-export const deleteUser = async (userId: string) => {
+export const deleteUser = async (user_id: string) => {
   try {
-    const response = await axios.post(`${API_URL}/users/${userId}/`);
+    const response = await api.delete(`admin/users/${user_id}/`);
     return{
       success: true,
       data: response.data
@@ -74,7 +66,32 @@ export const deleteUser = async (userId: string) => {
 
 export const updateUser = async (userId:string, updateData:any) => {
   try {
-    const response = await axios.post(`${API_URL}/users/${userId}/`, updateData);
+    const response = await api.put(`admin/users/${userId}/`, updateData);
+    return{
+      success: true,
+      data: response.data
+    }
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+
+export const getProfile = async () => {
+  try {
+    const response = await api.get('profile/');
+    return{
+      success: true,
+      data: response.data
+    }
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+export const updateProfile = async (updateData:any) => {
+  try {
+    const response = await api.put('profile/', updateData);
     return{
       success: true,
       data: response.data

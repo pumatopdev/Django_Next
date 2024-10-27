@@ -3,40 +3,52 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { login as loginService } from '../../services/authService';
+import { login} from '../../services/authService';
 import { validateEmail } from '../../utils/validation';
 import Layout from '../../components/Layout';
-import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { login: setAuth } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { setIsAuthenticated, setAuth } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!validateEmail(email)) {
       setError('Invalid email format');
       return;
     }
 
     try {
-      const response = await loginService(email, password);
-      if(response.success){
-        setAuth(response.data.token, response.data.user);  // Store JWT token in context
-        router.push('/');      // Redirect to Dashboard
+      const response = await login(email, password);
+      if(response?.success){
+        setLoading(false);
+        setAuth(response.data.first_name, response.data.last_name, response.data.email, response.data.role, response.data.user_id); 
+        setIsAuthenticated(true);
+        
+
+        if(response.data === 'superuser'){
+          router.push('/admin/');
+        } else if (response.data === 'admin'){
+          router.push('/');
+        } else {
+          router.push('/');
+        }
       }
     } catch (err) {
       setError('Invalid login credentials');  //toast.error!
+    } finally{
+      setLoading(false);
     }
   };
 
   return (
     <Layout>
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex text-black">
         <form className="w-full max-w-md bg-white p-8 rounded-lg" onSubmit={handleSubmit}>
           <h1 className="text-2xl mb-4">Login</h1>
           {error && <p className="text-red-500">{error}</p>}
@@ -60,12 +72,13 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
-            Login
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded" disabled = {loading}>
+            {loading? 'Logging in...' : 'Login'}
           </button>
           {/* Register link using <Link> */}
           <div className='mt-4'>
-            <p className='text-sm'>
+            <p className='text-sm text-gray-600'>
               Don't have an account?{' '}
               <a href = "/register" className='text-blue-500 float-right'>
               Register here</a>
