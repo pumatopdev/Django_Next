@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # Custom apps
     'users',
+    'product'
 ]
 
 AUTH_USER_MODEL = 'users.User'

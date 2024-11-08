@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import register, profile, user_management, user_modify, CustomTokenRefreshView, CustomTokenObtainPairView, logout
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     # User registration

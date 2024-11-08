@@ -1,7 +1,15 @@
+"use client"
+
 import Layout from '../components/Layout';
+import ProductList from '@/components/ProductList';
+import ProductCreateForm from '@/components/ProductCreateForm';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Dashboard() {
+
+  const {role} = useAuth();
+
   return (
     <Layout>
       <div className='flex-col'>
@@ -30,6 +38,11 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+      </div>
+      <div>
+        <ProductList />
+        <br></br>
+        {(role==='admin')&&<ProductCreateForm />}
       </div>
       
     </Layout>

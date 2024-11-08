@@ -29,7 +29,6 @@ const handleError = (err: any): {
 export const getUsers = async () => {
   try {
     const response = await api.get('admin/users/');
-    console.log("a;dsfjalskdjf;alkjsdflkja;lfd" + response.data.data);
     return{
       success: true,
       data: response.data.data

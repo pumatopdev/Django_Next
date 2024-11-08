@@ -1,14 +1,13 @@
-from django.shortcuts import get_object_or_404, render
-from rest_framework import status
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import UserSerializer, RegisterSerializer
-from django.contrib.auth import get_user_model   # I use customized model instead of django.contrib.auth.models
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken
+from .serializers import UserSerializer, RegisterSerializer
+from django.contrib.auth import get_user_model   # I use customized model instead of django.contrib.auth.models
 
 User = get_user_model()
 
@@ -23,7 +22,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         try:
             user = User.objects.get(email = request.data['email'])
         except User.DoesNotExist:
-            return Response({'success': False, 'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'success': False, 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         role = "superuser" if user.is_superuser else ("admin" if user.is_staff else "user")
         res = Response({
@@ -173,4 +172,7 @@ def user_modify(request, user_id):
         user = get_object_or_404(User, id=user_id)
         user.delete()
         return Response(get_response(True, "User deleted"), status=status.HTTP_204_NO_CONTENT)
+
 # Create your views here.
+# User.objects.get(id=user_id)
+#    if the user doesn't exists, it raises a User.DoewnotExist

@@ -27,7 +27,7 @@ export default function LoginPage() {
       const response = await login(email, password);
       if(response?.success){
         setLoading(false);
-        setAuth(response.data.first_name, response.data.last_name, response.data.email, response.data.role, response.data.user_id); 
+        setAuth(response.data.first_name, response.data.last_name, response.data.email, response.data.role,response.data.is_active, response.data.user_id); 
         setIsAuthenticated(true);
         
 
